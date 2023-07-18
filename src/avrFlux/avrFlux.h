@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-// Modified for use with fddEMU "Floppy Disk Drive Emulator" 
+// Modified for use with fddEMU "Floppy Disk Drive Emulator"
 // 2021 Acemi Elektronikci
 // -----------------------------------------------------------------------------
 // 3.5"/5.25" DD/HD Disk controller for Arduino
@@ -23,21 +23,22 @@
 #define AVRFLUX_H
 
 #ifdef __cplusplus
-extern "C" {
-#endif  //__cplusplus
+extern "C"
+{
+#endif //__cplusplus
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
-uint16_t calc_crc(uint8_t *buf, int n);
-void fdcWriteMode();
-void fdcReadMode();
-uint8_t fdcReadData(uint8_t bitlen, uint8_t *buffer, unsigned int n);
-uint8_t fdcWriteData(uint8_t bitlen, uint8_t *buffer, unsigned int n);
-void fdcWriteHeader(uint8_t bitlen, uint8_t *buffer);
-void fdcWriteGap(uint8_t bitlen, uint8_t gaplen);
+    uint16_t calc_crc(uint8_t *buf, int n);
+    void fdcWriteMode();
+    void fdcReadMode();
+    uint8_t fdcReadData(uint8_t bitlen, uint8_t *buffer, unsigned int n);
+    uint8_t fdcWriteData(uint8_t bitlen, uint8_t *buffer, unsigned int n);
+    void fdcWriteHeader(uint8_t bitlen, uint8_t *buffer);
+    void fdcWriteGap(uint8_t bitlen, uint8_t gaplen);
 
 #ifdef __cplusplus
 }
-#endif  //__cplusplus
-#endif  //AVR_FLUX_H
+#endif //__cplusplus
+#endif // AVR_FLUX_H

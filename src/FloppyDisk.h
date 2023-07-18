@@ -20,45 +20,62 @@
 #ifndef FLOPPYDISK_H
 #define FLOPPYDISK_H
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
-//define BIT LENGTH
-#define BIT_LENGTH_HD	16
-#define BIT_LENGTH_DD	32  
+// define BIT LENGTH
+#define BIT_LENGTH_HD 16
+#define BIT_LENGTH_DD 32
 
-struct __attribute__((__packed__)) fd_flags {
-	unsigned int changed : 1;
-	unsigned int ready : 1;
-	unsigned int readonly : 1;
-	unsigned int vdisk : 1;
-	unsigned int seclen : 2; //sector lenth: 1:256, 2:512
-	unsigned int empty : 2;
+struct __attribute__((__packed__)) fd_flags
+{
+    unsigned int changed : 1;
+    unsigned int ready : 1;
+    unsigned int readonly : 1;
+    unsigned int vdisk : 1;
+    unsigned int seclen : 2; // sector lenth: 1:256, 2:512
+    unsigned int empty : 2;
 };
 
-class FloppyDisk{
-	protected:
-		struct fd_flags flags;
-		uint8_t sectorLen;
-		uint8_t numTrack;   //number of tracks
-		uint8_t numSec;     //sectors per track
-		uint8_t bitLength;  //16 for HD, 32 for DD
-		long startSector;
-		FloppyDisk();
-		bool load(char *);
-		void eject();
-		bool isReady(void) {return (flags.ready);}
-		bool isReadonly(void) {return (flags.readonly);}
-		bool isChanged(void) {return (flags.changed);}
-		bool isVirtual(void) {return (flags.vdisk);}
-		void clrChanged(void) {flags.changed = 0;}
+class FloppyDisk
+{
+  protected:
+    struct fd_flags flags;
+    uint8_t sectorLen;
+    uint8_t numTrack;  // number of tracks
+    uint8_t numSec;    // sectors per track
+    uint8_t bitLength; // 16 for HD, 32 for DD
+    long startSector;
+    FloppyDisk();
+    bool load(char *);
+    void eject();
+    bool isReady(void)
+    {
+        return (flags.ready);
+    }
+    bool isReadonly(void)
+    {
+        return (flags.readonly);
+    }
+    bool isChanged(void)
+    {
+        return (flags.changed);
+    }
+    bool isVirtual(void)
+    {
+        return (flags.vdisk);
+    }
+    void clrChanged(void)
+    {
+        flags.changed = 0;
+    }
 
-	public:
-		char fName[13];
-		void loadVirtualDisk();
+  public:
+    char fName[13];
+    void loadVirtualDisk();
 };
 
 void errorMessage(const char *errMessageProgmem);
-char *diskinfo(uint8_t r_drive);    //Generate disk CHS info string
+char *diskinfo(uint8_t r_drive); // Generate disk CHS info string
 
-#endif  //FLOPPYDISK_H
+#endif // FLOPPYDISK_H

@@ -20,23 +20,23 @@
 #ifndef DISKFILE_H
 #define DISKFILE_H
 
-#include <stdint.h>
-#include <stdbool.h>
 #include "petitfs/pff.h"
+#include <stdbool.h>
+#include <stdint.h>
 
 class DiskFile
 {
-    private:    
-    FATFS fs; //petitfs
+  private:
+    FATFS fs; // petitfs
     FILINFO fno;
-    DIR dir;    
+    DIR dir;
     bool initSD();
 
-    public:
+  public:
     bool sdInitialized;
     FRESULT res;
     int16_t nFiles;
-    DiskFile();   
+    DiskFile();
     void printFileName();
     int16_t scanFiles(char *path);
     bool openDir(char *path);
@@ -44,11 +44,20 @@ class DiskFile
     bool getNextFile();
     bool getFileInfo(char *path, char *filename);
     uint32_t getStartSector();
-    bool getReadOnly() {return (fno.fattrib & AM_RDO);}
-    char *getFileName() {return fno.fname;}
-    uint32_t getFileSize() {return fno.fsize;}
+    bool getReadOnly()
+    {
+        return (fno.fattrib & AM_RDO);
+    }
+    char *getFileName()
+    {
+        return fno.fname;
+    }
+    uint32_t getFileSize()
+    {
+        return fno.fsize;
+    }
 };
 
 extern DiskFile sdfile;
 
-#endif //DISKFILE_H
+#endif // DISKFILE_H

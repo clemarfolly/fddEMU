@@ -20,10 +20,11 @@
 #ifndef SERIALUI_H
 #define SERIALUI_H
 
-class SerialUI{
-    public:
+class SerialUI
+{
+  public:
     uint8_t drv_sel;
-    int16_t file_index;  
+    int16_t file_index;
 
     SerialUI(void);
     void intro();
@@ -33,4 +34,4 @@ class SerialUI{
 
 extern class SerialUI ser;
 
-#endif //SERIALUI_H
+#endif // SERIALUI_H

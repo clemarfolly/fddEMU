@@ -36,41 +36,40 @@
 #ifndef _USB_SERIAL_H_
 #define _USB_SERIAL_H_
 
-	/* Includes: */
-		#include <avr/io.h>
-		#include <avr/wdt.h>
-		#include <avr/interrupt.h>
-		#include <avr/power.h>
+/* Includes: */
+#include <avr/io.h>
+#include <avr/wdt.h>
+#include <avr/interrupt.h>
+#include <avr/power.h>
 
-		#include "Descriptors.h"
+#include "Descriptors.h"
 
-        // From module: LUFA Board Hardware Information Driver
-        #include <LUFA/Drivers/Board/Board.h>
-		#include <LUFA/Drivers/Peripheral/Serial.h>
-		#include <LUFA/Drivers/Misc/RingBuffer.h>
-		#include <LUFA/Drivers/USB/USB.h>
-		#include <LUFA/Platform/Platform.h>
+// From module: LUFA Board Hardware Information Driver
+#include <LUFA/Drivers/Board/Board.h>
+#include <LUFA/Drivers/Peripheral/Serial.h>
+#include <LUFA/Drivers/Misc/RingBuffer.h>
+#include <LUFA/Drivers/USB/USB.h>
+#include <LUFA/Platform/Platform.h>
 
-
-	/* Function Prototypes: */
+/* Function Prototypes: */
 #ifdef __cplusplus
-extern "C" {
-#endif  //__cplusplus
+extern "C"
+{
+#endif //__cplusplus
 
-		void SetupHardware(void);
-		int usb_cdc_loop();
+    void SetupHardware(void);
+    int usb_cdc_loop();
 
-		extern RingBuffer_t USBtoUSART_Buffer;
-		extern RingBuffer_t USARTtoUSB_Buffer;
+    extern RingBuffer_t USBtoUSART_Buffer;
+    extern RingBuffer_t USARTtoUSB_Buffer;
 #ifdef __cplusplus
 }
-#endif  //__cplusplus
+#endif //__cplusplus
 
-		void EVENT_USB_Device_Connect(void);
-		void EVENT_USB_Device_Disconnect(void);
-		void EVENT_USB_Device_ConfigurationChanged(void);
-		void EVENT_USB_Device_ControlRequest(void);
-		void EVENT_CDC_Device_LineEncodingChanged(USB_ClassInfo_CDC_Device_t* const CDCInterfaceInfo);		
+void EVENT_USB_Device_Connect(void);
+void EVENT_USB_Device_Disconnect(void);
+void EVENT_USB_Device_ConfigurationChanged(void);
+void EVENT_USB_Device_ControlRequest(void);
+void EVENT_CDC_Device_LineEncodingChanged(USB_ClassInfo_CDC_Device_t *const CDCInterfaceInfo);
 
 #endif
-

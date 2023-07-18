@@ -17,114 +17,122 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 // -----------------------------------------------------------------------------
 
-#include "fddEMU.h"
 #include "DiskFile.h"
 #include "UINotice.h" //msg.show
+#include "fddEMU.h"
 #include <string.h>
 
-DiskFile sdfile; //we will use as extern
+DiskFile sdfile; // we will use as extern
 
 bool DiskFile::initSD()
-{  
-  // initialize the SD card  
-  res = pf_mount(&fs);
-  if (res == FR_OK) sdInitialized = true;
-  else return false;
-  nFiles = 0;
-  scanFiles((char *)s_RootDir); //get number of files on SD root Dir  
-  return true;    
+{
+    // initialize the SD card
+    res = pf_mount(&fs);
+    if (res == FR_OK)
+        sdInitialized = true;
+    else
+        return false;
+    nFiles = 0;
+    scanFiles((char *)s_RootDir); // get number of files on SD root Dir
+    return true;
 }
 
 DiskFile::DiskFile()
 {
-    sdInitialized = false;    
-    initSD();    
+    sdInitialized = false;
+    initSD();
 }
 
 void DiskFile::printFileName()
 {
-  #if ENABLE_SERIAL || DEBUG
-    if (fno.fattrib & AM_DIR) Serial.write('[');
-    Serial.print(fno.fname);                
-    if (fno.fattrib & AM_DIR) Serial.write(']');    
-  #endif //ENABLE_SERIAL || DEBUG  
+#if ENABLE_SERIAL || DEBUG
+    if (fno.fattrib & AM_DIR)
+        Serial.write('[');
+    Serial.print(fno.fname);
+    if (fno.fattrib & AM_DIR)
+        Serial.write(']');
+#endif // ENABLE_SERIAL || DEBUG
 }
 
 int16_t DiskFile::scanFiles(char *path)
-{      
-    nFiles = 0;    
-    if ( !openDir(path) ) 
-      return 0;
-    while ( getNextFile() ) 
+{
+    nFiles = 0;
+    if (!openDir(path))
+        return 0;
+    while (getNextFile())
     {
-    #if ENABLE_WDT
-      wdt_reset();
-    #endif //ENABLE_WDT
-      nFiles++;
-    #if DEBUG
-      printFileName();
-      Serial.write('\n');
-    #endif //DEBUG
+#if ENABLE_WDT
+        wdt_reset();
+#endif // ENABLE_WDT
+        nFiles++;
+#if DEBUG
+        printFileName();
+        Serial.write('\n');
+#endif // DEBUG
     }
     return nFiles;
 }
 
 bool DiskFile::openDir(char *path)
 {
-    if ( (res = pf_opendir(&dir, path)) == FR_OK) 
+    if ((res = pf_opendir(&dir, path)) == FR_OK)
         return true;
     else if (res & (FR_DISK_ERR | FR_NOT_READY))
     {
-      if (initSD()) //reinitialize SD            
-        if ( (res = pf_opendir(&dir, path)) == FR_OK) //retry
-          return true;
+        if (initSD())                                    // reinitialize SD
+            if ((res = pf_opendir(&dir, path)) == FR_OK) // retry
+                return true;
     }
-    return false;  
+    return false;
 }
 
 bool DiskFile::getNextEntry()
 {
-  res = pf_readdir(&dir, &fno);  
-  if (res != FR_OK) return false;
-  if (fno.fname[0] == 0) return false;
-  return true;  
+    res = pf_readdir(&dir, &fno);
+    if (res != FR_OK)
+        return false;
+    if (fno.fname[0] == 0)
+        return false;
+    return true;
 }
 
 bool DiskFile::getNextFile()
 {
-  do  {
-      if ( !getNextEntry() ) return false;
-  } while (fno.fattrib & (AM_DIR) ); //skip DIR, LFN, VOL entries
-  return true;
+    do
+    {
+        if (!getNextEntry())
+            return false;
+    } while (fno.fattrib & (AM_DIR)); // skip DIR, LFN, VOL entries
+    return true;
 }
 
 bool DiskFile::getFileInfo(char *path, char *filename)
-{ 
-  if ( !openDir(path) ) 
+{
+    if (!openDir(path))
+        return false;
+    while (getNextEntry())
+    {
+#if ENABLE_WDT
+        wdt_reset();
+#endif // ENABLE_WDT
+        if (strcmp(fno.fname, filename) == 0)
+            return true;
+    }
     return false;
-  while ( getNextEntry() )
-  {
-  #if ENABLE_WDT
-    wdt_reset();
-  #endif //ENABLE_WDT
-    if (strcmp(fno.fname, filename) == 0) 
-      return true;
-  }
-  return false;
 }
 
 uint32_t DiskFile::getStartSector()
 {
-    res = pf_open(fno.fname);  
-    if (res != FR_OK) 
+    res = pf_open(fno.fname);
+    if (res != FR_OK)
     {
         msg.error(err_fopen);
         return 0;
-    }   
-    if (!isContiguousFile())  //we will use direct sector access so we need a contiguous file
+    }
+    if (!isContiguousFile()) // we will use direct sector access so we need a contiguous file
     {
         msg.error(err_noncontig);
         return 0;
     }
-    return get_start_sector();  
+    return get_start_sector();
 }

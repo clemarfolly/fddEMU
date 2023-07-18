@@ -20,38 +20,40 @@
 #ifndef VIRTUALFLOPPYFS_H
 #define VIRTUALFLOPPYFS_H
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
-
-class Fat12{
-    public:
+class Fat12
+{
+  public:
     void setCluster(uint16_t cluster, uint16_t next_cluster, uint8_t *buffer);
     void genClusters(uint16_t firstCluster, int16_t n, uint8_t *buffer);
 };
 
-//define VirtualFloppy Flags bits
-//bit 0 and 1 are drive bits
+// define VirtualFloppy Flags bits
+// bit 0 and 1 are drive bits
 #define BIT_EOFLIST 2
-//define virtual floppy flags
-#define F_EOFLIST   (1 << BIT_EOFLIST)
+// define virtual floppy flags
+#define F_EOFLIST (1 << BIT_EOFLIST)
 
-class VirtualFloppyFS: public Fat12{
-    private:
-    uint32_t sdRootSect;        
+class VirtualFloppyFS : public Fat12
+{
+  private:
+    uint32_t sdRootSect;
     void genBootSector(uint8_t *buffer);
     void genFatSector(uint8_t *buffer, uint16_t sector);
     void genRootDir(uint8_t *buffer, uint16_t sector);
-    void genDataSector(uint8_t *buffer, uint16_t sector);    
-    public:
+    void genDataSector(uint8_t *buffer, uint16_t sector);
+
+  public:
     uint8_t flags;
-    char filename[13];    
+    char filename[13];
     VirtualFloppyFS();
     uint16_t readSector(uint8_t *buffer, uint16_t sector);
     uint16_t writeSector(uint8_t *buffer, uint16_t sector);
-    void loadImage(); 
+    void loadImage();
 };
 
 extern class VirtualFloppyFS vffs;
 
-#endif //VIRTUALFLOPPYFS_H
+#endif // VIRTUALFLOPPYFS_H
