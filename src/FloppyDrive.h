@@ -21,6 +21,7 @@
 #define FLOPPYDRIVE_H
 
 #include "FloppyDisk.h"
+#include <avr/io.h>
 #include <stdint.h>
 
 #if defined(__AVR_ATmega328P__)

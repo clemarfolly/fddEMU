@@ -20,6 +20,8 @@
 #ifndef SERIALUI_H
 #define SERIALUI_H
 
+#include <stdint.h>
+
 class SerialUI
 {
   public:
