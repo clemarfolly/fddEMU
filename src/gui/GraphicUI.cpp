@@ -22,9 +22,9 @@
 #include "DiskFile.h"
 #include "FloppyDrive.h"
 #include "fddEMU.h"
-#if ENABLE_GUI
-class GraphicUI disp; // will use as extern
-#endif                // ENABLE_GUI
+// #if ENABLE_GUI && ENABLE_LCD1602 != 1
+// class GraphicUI disp; // will use as extern
+// #endif                // ENABLE_GUI
 
 /// https://github.com/olikraus/u8glib/blob/master/sys/arm/examples/menu/menu.c
 void GraphicUI::drawMenu(void)
@@ -152,7 +152,7 @@ void GraphicUI::splashScreen()
     drawStrP(floppy_width + d, 40, str_elektron);
 }
 
-void GraphicUI::init() 
+void GraphicUI::init()
 {
     u8g_SetPinInput(PN(2, 5));
     u8g_SetPinLevel(PN(2, 5), 1);
@@ -188,4 +188,3 @@ GraphicUI::GraphicUI()
 GraphicUI::~GraphicUI()
 {
 }
-

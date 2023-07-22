@@ -49,7 +49,7 @@ void ADCButton::requestADC(uint8_t channel) // request Analog to Digital Convers
 {
     ADMUX = ((channel & 0x0f) | (1 << REFS0)); // Select channel and voltage reference, if ADLAR is set result is left
                                                // justified ADCH register is sufficient
-    ADCSRA |= (1 << ADSC); // Start the AD conversion
+    ADCSRA |= (1 << ADSC);                     // Start the AD conversion
     // sample-and-hold takes 13.5 ADC clock cycles on first conversion
     // and 1.5 ADC clock cycles on subsequent converisons
     // ADC prescaler is set to clock/128, clock=16mhz so "1.5ADC cycle" = "192 cpu cycle" = 12uS

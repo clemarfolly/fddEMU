@@ -1,15 +1,15 @@
 
-#include "DisplayConf.h"
 #include "Display.h"
 #include "ADCButton.h"
 #include "DiskFile.h"
+#include "DisplayConf.h"
 #include "FloppyDrive.h"
 #include "fddEMU.h"
+#include "serial/SerialUI.h"
 #include <string.h>
 
 Display::Display()
 {
-    init();
     notice_timer = NOTICE_TIMEOUT;
     sleep_timer = SLEEP_TIMEOUT;
     menu_sel = 0;
@@ -18,36 +18,6 @@ Display::Display()
 
 Display::~Display()
 {
-}
-
-void Display::drawMenu(void)
-{
-
-}
-
-void Display::loadingScreen()
-{
-
-}
-
-void Display::noticeScreen()
-{
-
-}
-
-void Display::busyScreen()
-{
-
-}
-
-void Display::splashScreen()
-{
-    
-}
-
-void Display::statusScreen()
-{
-    
 }
 
 void Display::showNoticeP(const char *header, const char *message)
@@ -62,6 +32,7 @@ void Display::showNoticeP(const char *header, const char *message)
 
 void Display::showDriveIdle()
 {
+    Serial.print(F("showDriveIdle\n"));
     selectDrive(0);
     setPage(PAGE_STATUS);
     idle_timer = 0; // update screen ASAP
@@ -88,11 +59,11 @@ void Display::setPage(uint8_t r_page)
     f.page = r_page; // set requested page
     if (sleep_timer == 0)
     {
-        Display::sleepOff();
+        sleepOff();
 #if DEBUG
         Serial.print(F("Screen wakeup\n"));
 #endif // DEBUG
-        // showDriveIdle();
+       // showDriveIdle();
     }
     sleep_timer = SLEEP_TIMEOUT; // reset sleep timer
 }
@@ -185,7 +156,7 @@ void Display::update()
             sleep_timer--;
             if (sleep_timer == 0)
             {
-                Display::sleepOn();
+                sleepOn();
 #if DEBUG
                 Serial.print(F("Screen sleep\n"));
 #endif // DEBUG
@@ -195,17 +166,16 @@ void Display::update()
     idle_timer++;
 }
 
-
 void Display::buttonAction(int8_t button)
 {
     if (button <= 0) // do nothing
         return;
 
-    if (sleep_timer == 0)        // if screen asleep
-        setPage(PAGE_STATUS);    // wake up screen @status
-    
+    if (sleep_timer == 0)     // if screen asleep
+        setPage(PAGE_STATUS); // wake up screen @status
+
     sleep_timer = SLEEP_TIMEOUT; // reset sleep timer
-    
+
     switch (button)
     {
     case BTN_EXTRA:                   // load virtual disk to selected drive

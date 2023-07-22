@@ -6,7 +6,7 @@
 
 class Display
 {
-protected:
+  protected:
     struct __attribute__((__packed__)) uiFlags
     {
         unsigned int page : 6;
@@ -17,25 +17,25 @@ protected:
     uint8_t notice_timer;
     const char *notice_header;
     const char *notice_message;
-    virtual void sleepOn() { };
-    virtual void sleepOff() { };
-    virtual void init(){ };
-    virtual void drawMenu(void);
+    virtual void sleepOn() {};
+    virtual void sleepOff() {};
+    virtual void drawMenu() {};
     virtual void drawPage();
-    virtual void loadingScreen();
-    virtual void busyScreen();
-    virtual void noticeScreen();
-    virtual void splashScreen();
-    virtual void statusScreen();
+    virtual void loadingScreen() {};
+    virtual void busyScreen() { };
+    virtual void noticeScreen() {};
+    virtual void splashScreen() {};
+    virtual void statusScreen() {};
 
-private:
-public:
+  private:
+  public:
     int16_t idx_sel; // where were we in the menu index ?
     int8_t menu_sel; // menu index
     int8_t menu_max;
     char menuFileNames[MENU_ITEMS][FNAME_SIZE];
     Display();
     ~Display();
+    virtual void init(){};
     void setPage(uint8_t);
     uint8_t getPage()
     {

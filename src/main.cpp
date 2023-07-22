@@ -16,7 +16,6 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 // -----------------------------------------------------------------------------
-
 #include "DiskFile.h"
 #include "FloppyDrive.h"
 #include "fddEMU.h"
@@ -24,8 +23,18 @@
 #include "serial/SerialUI.h"
 #include <avr/io.h>
 
+#if ENABLE_GUI
+#if ENABLE_LCD1602
+LCDHD44780 disp;
+#else
+GraphicUI disp;
+#endif
+#endif
+
 int main(void)
 {
+    disp.init();
+
 #if ENABLE_WDT
     wdt_enable(WDTO_8S);
 #endif // ENABLE_WDT

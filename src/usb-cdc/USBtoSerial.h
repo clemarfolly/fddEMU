@@ -37,17 +37,17 @@
 #define _USB_SERIAL_H_
 
 /* Includes: */
-#include <avr/io.h>
-#include <avr/wdt.h>
 #include <avr/interrupt.h>
+#include <avr/io.h>
 #include <avr/power.h>
+#include <avr/wdt.h>
 
 #include "Descriptors.h"
 
 // From module: LUFA Board Hardware Information Driver
 #include <LUFA/Drivers/Board/Board.h>
-#include <LUFA/Drivers/Peripheral/Serial.h>
 #include <LUFA/Drivers/Misc/RingBuffer.h>
+#include <LUFA/Drivers/Peripheral/Serial.h>
 #include <LUFA/Drivers/USB/USB.h>
 #include <LUFA/Platform/Platform.h>
 

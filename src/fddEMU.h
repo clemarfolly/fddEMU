@@ -35,7 +35,11 @@
 #include "serial/simpleUART.h" //debug +itoa
 #endif                         // ENABLE_SERIAL
 #if ENABLE_GUI
+#if ENABLE_LCD1602
+#include "gui/LCDHD44780.h"
+#else
 #include "gui/GraphicUI.h"
+#endif
 #include "gui/ADCButton.h"
 #endif // ENABLE_GUI
 #if ENABLE_VFFS
@@ -45,6 +49,14 @@
 // Drive selection macros used in core and ui
 #define DRIVE0 (1 << 0) // 1
 #define DRIVE1 (1 << 1) // 2
+
+#if ENABLE_GUI
+#if ENABLE_LCD1602
+extern LCDHD44780 disp;
+#else
+extern GraphicUI disp;
+#endif
+#endif
 
 const char s_RootDir[] = {'\0'};      // Don't make PROGMEM
 const char s_bootfile[] = "BOOT.IMG"; // Don't make PROGMEM
