@@ -24,6 +24,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define FTYPE_FILE 1
+#define FTYPE_DIR 2
+
 class DiskFile
 {
   private:
@@ -41,7 +44,7 @@ class DiskFile
     int16_t scanFiles(char *path);
     bool openDir(char *path);
     bool getNextEntry();
-    bool getNextFile();
+    uint8_t getNextFile();
     bool getFileInfo(char *path, char *filename);
     uint32_t getStartSector();
     bool getReadOnly()

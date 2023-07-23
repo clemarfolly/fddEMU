@@ -228,7 +228,7 @@ class FloppyDrive : public FloppyDisk
   public:
     FloppyDrive();
     char *diskInfoStr();
-    bool load(char *);
+    bool load(char *, bool);
     void eject();
     void run();
 };

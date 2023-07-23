@@ -11,7 +11,12 @@
 #define PAGE_BUSY 4
 #define PAGE_SPLASH 5
 
-#define FNAME_SIZE 13
+#define FNAME_SIZE 15 //13 chars + [] for dir.
+
+#if ENABLE_GUI && ENABLE_LCD1602
+#define MENU_ITEMS 2
+#else
 #define MENU_ITEMS 6
+#endif
 
 #endif

@@ -326,9 +326,9 @@ int FloppyDrive::setSectorData(int lba)
     return n;
 }
 
-bool FloppyDrive::load(char *r_file)
+bool FloppyDrive::load(char *r_file, bool showError)
 {
-    return (FloppyDisk::load(r_file));
+    return (FloppyDisk::load(r_file, showError));
 }
 
 void FloppyDrive::eject()

@@ -33,7 +33,7 @@ bool DiskFile::initSD()
     else
         return false;
     nFiles = 0;
-    scanFiles((char *)s_RootDir); // get number of files on SD root Dir
+    scanFiles((char *)s_dir); // get number of files on SD root Dir
     return true;
 }
 
@@ -96,14 +96,15 @@ bool DiskFile::getNextEntry()
     return true;
 }
 
-bool DiskFile::getNextFile()
+uint8_t DiskFile::getNextFile()
 {
-    do
-    {
-        if (!getNextEntry())
-            return false;
-    } while (fno.fattrib & (AM_DIR)); // skip DIR, LFN, VOL entries
-    return true;
+    if (!getNextEntry())
+        return 0;
+    
+   if (fno.fattrib & (AM_DIR))
+    return FTYPE_DIR;
+
+  return FTYPE_FILE;
 }
 
 bool DiskFile::getFileInfo(char *path, char *filename)
@@ -123,16 +124,49 @@ bool DiskFile::getFileInfo(char *path, char *filename)
 
 uint32_t DiskFile::getStartSector()
 {
+  if (IsRootDir()) // root directory
+  {
     res = pf_open(fno.fname);
-    if (res != FR_OK)
+  }
+  else
+  {
+    char fullpath[255];
+    uint8_t i = 0;
+    uint8_t j = 0;
+
+    while (s_dir[j] != '\0')
     {
-        msg.error(err_fopen);
-        return 0;
+      fullpath[i] = s_dir[j];
+      i++;
+      j++;
     }
-    if (!isContiguousFile()) // we will use direct sector access so we need a contiguous file
+
+    if (fullpath[i - 1] != '/')
     {
-        msg.error(err_noncontig);
-        return 0;
+      fullpath[i] = '/';
+      i++;
     }
-    return get_start_sector();
+
+    j = 0;
+    while (fno.fname[j] != '\0')
+    {
+      fullpath[i] = fno.fname[j];
+      i++;
+      j++;
+    }
+
+    res = pf_open(fullpath);
+  }
+
+  if (res != FR_OK)
+  {
+    msg.error(err_fopen);
+    return 0;
+  }
+  if (!isContiguousFile()) // we will use direct sector access so we need a contiguous file
+  {
+    msg.error(err_noncontig);
+    return 0;
+  }
+  return get_start_sector();
 }

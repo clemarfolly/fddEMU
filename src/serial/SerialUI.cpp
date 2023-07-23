@@ -65,7 +65,7 @@ void SerialUI::readRx()
             file_index = 0;
         if (file_index >= sdfile.nFiles)
             file_index = sdfile.nFiles;
-        sdfile.openDir((char *)s_RootDir); // rewind directory
+        sdfile.openDir((char *)s_dir); // rewind directory
         for (int16_t i = 0; i <= file_index; i++)
             sdfile.getNextFile(); // skip files
         Serial.write('>');
@@ -95,7 +95,7 @@ void SerialUI::readRx()
                 Serial.write(' '); // clear current row in console
             Serial.write('\n');
             if (filename[0] != 0)
-                drive[drv_sel - 1].load(filename);
+                drive[drv_sel - 1].load(filename, true);
             else
                 drive[drv_sel - 1].loadVirtualDisk();
             Serial.print(drive[drv_sel - 1].diskInfoStr());

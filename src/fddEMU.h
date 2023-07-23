@@ -50,6 +50,8 @@
 #define DRIVE0 (1 << 0) // 1
 #define DRIVE1 (1 << 1) // 2
 
+#define IsRootDir() ((s_dir[0] == '/') && (s_dir[1] == '\0'))
+
 #if ENABLE_GUI
 #if ENABLE_LCD1602
 extern LCDHD44780 disp;
@@ -58,13 +60,17 @@ extern GraphicUI disp;
 #endif
 #endif
 
-const char s_RootDir[] = {'\0'};      // Don't make PROGMEM
+extern char s_dir[255];      // Don't make PROGMEM
 const char s_bootfile[] = "BOOT.IMG"; // Don't make PROGMEM
 
 const char str_fddEMU[] PROGMEM = "fddEMU";
 const char str_2021[] PROGMEM = "(c) 2021";
 const char str_acemi[] PROGMEM = "Acemi";
+#if ENABLE_LCD1602
+const char str_elektron[] PROGMEM = "Elektron"; // to fit in 16 chars lcd cols.
+#else
 const char str_elektron[] PROGMEM = "Elektronikci";
+#endif
 const char str_usage[] PROGMEM = "S: Select drive\nP: Previous\nN: Next\nL: Load\nE: Eject";
 const char str_colon[] PROGMEM = ": ";
 const char str_drive[] PROGMEM = "Drive ";

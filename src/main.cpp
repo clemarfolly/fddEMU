@@ -23,6 +23,8 @@
 #include "serial/SerialUI.h"
 #include <avr/io.h>
 
+char s_dir[255] = "/\0"; 
+
 #if ENABLE_GUI
 #if ENABLE_LCD1602
 LCDHD44780 disp;
@@ -33,7 +35,9 @@ GraphicUI disp;
 
 int main(void)
 {
+#if ENABLE_GUI
     disp.init();
+#endif // ENABLE_GUI
 
 #if ENABLE_WDT
     wdt_enable(WDTO_8S);
@@ -43,7 +47,7 @@ int main(void)
     ser.intro();
 #endif // ENABLE_SERIAL || DEBUG
     if (sdfile.sdInitialized)
-        drive[0].load((char *)s_bootfile); // if there is "BOOT.IMG" on SD load it
+        drive[0].load((char *)s_bootfile, false); // if there is "BOOT.IMG" on SD load it
 #if ENABLE_VFFS
     else
         drive[0].loadVirtualDisk();

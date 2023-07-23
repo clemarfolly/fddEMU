@@ -97,42 +97,81 @@ void Display::drawPage()
 
 void Display::loadMenuFiles()
 {
-    menu_max = MENU_ITEMS;
-    if (sdfile.nFiles + 1 < menu_max)
-        menu_max = sdfile.nFiles + 1;
+	menu_max = MENU_ITEMS;
 
-    // Limit menu selection
-    if (menu_sel < 0)
-    {
-        menu_sel = 0;
-        idx_sel--;
-    }
-    else if (menu_sel >= menu_max)
-    {
-        menu_sel = menu_max - 1;
-        idx_sel++;
-    }
-    // Limit index selection (+1)add one more entry for "nodisk" or "virtual disk"
-    if (idx_sel > (sdfile.nFiles - MENU_ITEMS + 1))
-        idx_sel = sdfile.nFiles - MENU_ITEMS + 1;
-    else if (idx_sel < 0)
-        idx_sel = 0;
-    sdfile.openDir((char *)s_RootDir); // open directory
-    for (int16_t i = 0; i < idx_sel; i++)
-        sdfile.getNextFile(); // skip some files
-    for (int8_t i = 0; i < menu_max; i++)
-    {
-        if (sdfile.getNextFile())
-            memcpy(menuFileNames[i], sdfile.getFileName(), 13);
-        else
-        {
+	if (sdfile.nFiles + 1 < menu_max)
+	{
+		menu_max = sdfile.nFiles + 1;
+	}
+
+	// Limit menu selection
+	if (menu_sel < 0)
+	{
+		menu_sel = 0;
+		idx_sel--;
+	}
+	else if (menu_sel >= menu_max)
+	{
+		menu_sel = menu_max - 1;
+		idx_sel++;
+	}
+
+	// Limit index selection (+1)add one more entry for "nodisk" or "virtual disk"
+	if (idx_sel > (sdfile.nFiles - MENU_ITEMS + 1))
+	{
+		idx_sel = sdfile.nFiles - MENU_ITEMS + 1;
+	}
+	else if (idx_sel < 0)
+	{
+		idx_sel = 0;
+	}
+
+	sdfile.openDir(&s_dir[0]); // open directory
+
+	for (int16_t i = 0; i < idx_sel; i++)
+	{
+		sdfile.getNextFile(); // skip some files
+	}
+
+	uint8_t filetype;
+	for (int8_t i = 0; i < menu_max; i++)
+	{
+		filetype = sdfile.getNextFile();
+
+		if (filetype > 0)
+		{
+			if (filetype == FTYPE_DIR)
+			{
+				menuFileNames[i][0] = '[';
+				size_t j = 0;
+
+				while (sdfile.getFileName()[j] != '\0')
+				{
+					if (j < 13)
+						menuFileNames[i][j + 1] = sdfile.getFileName()[j];
+
+					j++;
+				}
+				if (j < 13)
+				{
+					menuFileNames[i][j + 1] = ']';
+					menuFileNames[i][j + 2] = '\0';
+				}
+			}
+			else
+			{
+				memcpy(menuFileNames[i], sdfile.getFileName(), 13);
+			}
+		}
+		else
+		{
 #if ENABLE_VFFS
-            strcpy_P(menuFileNames[i], str_label);
+			strcpy_P(menuFileNames[i], str_label);
 #else
-            strcpy_P(menuFileNames[i], str_nodisk);
+			strcpy_P(menuFileNames[i], str_nodisk);
 #endif // ENABLE_VFFS
-        }
-    }
+		}
+	}
 }
 
 void Display::update()
@@ -168,89 +207,156 @@ void Display::update()
 
 void Display::buttonAction(int8_t button)
 {
-    if (button <= 0) // do nothing
-        return;
+	if ((button <= 0) || (button >= 6)) // do nothing
+		return;
 
-    if (sleep_timer == 0)     // if screen asleep
-        setPage(PAGE_STATUS); // wake up screen @status
+	// if (sleep_timer == 0) //if screen asleep
+	//	setPage(PAGE_STATUS); //wake up screen @status
 
-    sleep_timer = SLEEP_TIMEOUT; // reset sleep timer
+	sleep_timer = SLEEP_TIMEOUT; // reset sleep timer
 
-    switch (button)
-    {
-    case BTN_EXTRA:                   // load virtual disk to selected drive
-        if (getPage() == PAGE_STATUS) // behave as drive select
-        {
-            if (getSelectedDrive())
-            {
-                drive[getSelectedDrive() - 1].loadVirtualDisk();
-                showDriveIdle();
-            }
-        }
-        break;
-    case BTN_DOWN:                    // Next file
-        if (getPage() == PAGE_STATUS) // behave as drive select+
-        {
-            if (getSelectedDrive() == 0)
-                selectDrive(DRIVE0);
+	switch (button)
+	{
+	case BTN_EXTRA:					  // load virtual disk to selected drive
+		if (getPage() == PAGE_STATUS) // behave as drive select
+		{
+			if (getSelectedDrive())
+			{
+				drive[getSelectedDrive() - 1].loadVirtualDisk();
+				showDriveIdle();
+			}
+		}
+		else if (getPage() == PAGE_MENU)
+		{
+			if (!IsRootDir())
+			{
+				uint8_t j = 0;
+				uint8_t k = 0;
+
+				while(s_dir[j] != '\0')
+				{
+					if (s_dir[j] == '/')
+					{
+						k=j;
+					}
+					j++;
+				}
+
+				if (j > 0)
+				{
+					if (k == 0)
+					{
+						k++;
+					}
+
+					s_dir[k] = '\0';
+				}
+
+				menu_sel = 0;
+				idx_sel = 0;
+				setPage(PAGE_MENU);
+				loadMenuFiles();
+			}
+		}
+		break;
+	case BTN_DOWN:					  // Next file
+		if (getPage() == PAGE_STATUS) // behave as drive select+
+		{
+			if (getSelectedDrive() == 0)
+				selectDrive(DRIVE0);
 #if ENABLE_DRIVE_B
-            else if (isDriveA())
-                selectDrive(DRIVE1);
+			else if (isDriveA())
+				selectDrive(DRIVE1);
 #endif // ENABLE_DRIVE_B
-        }
-        else if (getPage() == PAGE_MENU) // behave as file select+
-        {
-            menu_sel++;
-            loadMenuFiles();
-        }
-        break;
-    case BTN_UP:                      // Previous file
-        if (getPage() == PAGE_STATUS) // behave as drive select-
-        {
-            if (isDriveB())
-                selectDrive(DRIVE0);
-        }
-        else if (getPage() == PAGE_MENU) // behave as file select-
-        {
-            menu_sel--;
-            loadMenuFiles();
-        }
-        break;
-    case BTN_OK:                      // load disk
-        if (getPage() == PAGE_STATUS) // if we are in STATUS page
-        {
-            if (getSelectedDrive()) // if a drive is selected open file selection menu
-            {
-                menu_sel = 0;
-                idx_sel = 0;
-                setPage(PAGE_MENU);
-                loadMenuFiles();
-            }
-        }
-        else if (getPage() == PAGE_MENU) // if we are in file selection menu load selected file
-        {
-            bool load_res = true;
-            ;
+		}
+		else if (getPage() == PAGE_MENU) // behave as file select+
+		{
+			menu_sel++;
+			loadMenuFiles();
+		}
+		break;
+	case BTN_UP:					  // Previous file
+		if (getPage() == PAGE_STATUS) // behave as drive select-
+		{
+			if (isDriveB())
+				selectDrive(DRIVE0);
+		}
+		else if (getPage() == PAGE_MENU) // behave as file select-
+		{
+			menu_sel--;
+			loadMenuFiles();
+		}
+		break;
+	case BTN_OK:					  // load disk
+		if (getPage() == PAGE_STATUS) // if we are in STATUS page
+		{
+			if (getSelectedDrive()) // if a drive is selected open file selection menu
+			{
+				menu_sel = 0;
+				idx_sel = 0;
+				setPage(PAGE_MENU);
+				loadMenuFiles();
+			}
+		}
+		else if (getPage() == PAGE_MENU) // if we are in file selection menu load selected file
+		{
+			bool load_res = true;
 
-            showDriveLoading();
-            if (strcmp_P(menuFileNames[menu_sel], str_label) == 0)
-                drive[getSelectedDrive() - 1].loadVirtualDisk();
-            else
-                load_res = drive[getSelectedDrive() - 1].load(menuFileNames[menu_sel]);
-            if (load_res)
-                setPage(PAGE_STATUS); // return to status else show error message
-        }
-        break;
-    case BTN_CANCEL:                // eject disk
-        if (getPage() == PAGE_MENU) // behave as cancel
-        {
-            setPage(PAGE_STATUS); // return to status
-        }
-        else if (getPage() == PAGE_STATUS)
-        {
-            if (getSelectedDrive()) // if a drive is selected behave as eject
-                drive[getSelectedDrive() - 1].eject();
-        }
-        break;
-    }
+			showDriveLoading();
+			if (strcmp_P(menuFileNames[menu_sel], str_label) == 0)
+			{
+				drive[getSelectedDrive() - 1].loadVirtualDisk();
+			}
+			else if (menuFileNames[menu_sel][0] == '[') // is directory
+			{
+				uint8_t j = 0;
+
+				while (s_dir[j] != '\0')
+				{
+					j++;
+				}
+
+				if (s_dir[j - 1] != '/')
+				{
+					s_dir[j] = '/';
+					j++;
+				}
+
+				uint8_t k = 1;
+				while (menuFileNames[menu_sel][k] != ']')
+				{
+					s_dir[j + k - 1] = menuFileNames[menu_sel][k];
+					k++;
+				}
+				s_dir[j + k] = '\0';
+
+				menu_sel = 0;
+				idx_sel = 0;
+				setPage(PAGE_MENU);
+				loadMenuFiles();
+				load_res = false; // do not change page and show menu.
+			}
+			else
+			{
+				load_res = drive[getSelectedDrive() - 1].load(menuFileNames[menu_sel], true);
+			}
+
+			if (load_res)
+				setPage(PAGE_STATUS); // return to status else show error message
+		}
+		break;
+	case BTN_CANCEL:				// eject disk
+		if (getPage() == PAGE_MENU) // behave as cancel
+		{
+			setPage(PAGE_STATUS); // return to status
+		}
+		else if (getPage() == PAGE_STATUS)
+		{
+			if (getSelectedDrive()) // if a drive is selected behave as eject
+			{
+				drive[getSelectedDrive() - 1].eject();
+			}
+		}
+		break;
+	}
 }

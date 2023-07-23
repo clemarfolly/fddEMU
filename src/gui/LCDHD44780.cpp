@@ -24,10 +24,6 @@
 #include "Lcd1602_595.h"
 #include "fddEMU.h"
 
-// #if ENABLE_GUI && ENABLE_LCD1602
-// class LCDHD44780 disp; // will use as extern
-// #endif                // ENABLE_GUI
-
 void LCDHD44780::sleepOn()
 {
 }

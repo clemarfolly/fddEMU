@@ -47,7 +47,7 @@ class FloppyDisk
     uint8_t bitLength; // 16 for HD, 32 for DD
     long startSector;
     FloppyDisk();
-    bool load(char *);
+    bool load(char *, bool);
     void eject();
     bool isReady(void)
     {

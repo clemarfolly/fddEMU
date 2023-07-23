@@ -24,7 +24,7 @@
 #include "petitfs/diskio.h"
 #include <string.h> //memcpy
 
-bool FloppyDisk::load(char *filename)
+bool FloppyDisk::load(char *filename, bool showError)
 {
     uint16_t totalSectors;
     uint8_t wbuf[18]; // working buffer;
@@ -32,9 +32,12 @@ bool FloppyDisk::load(char *filename)
     if (isReady())
         eject(); // if a disk is loaded, eject
     // open requested file
-    if (!sdfile.getFileInfo((char *)s_RootDir, filename))
+    if (!sdfile.getFileInfo((char *)s_dir, filename))
     {
-        msg.error(err_notfound);
+        if (showError)
+        {
+            msg.error(err_notfound);
+        }
         return false;
     }
     startSector = sdfile.getStartSector();
