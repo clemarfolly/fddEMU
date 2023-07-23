@@ -20,36 +20,34 @@
 #ifndef ADCBUTTON_H
 #define ADCBUTTON_H
 
-#include <stdint.h>
+#define adcReady    (!(ADCSRA & (1<<ADSC)) )
+#define adcBusy     (ADCSRA & (1<<ADSC))
 
-#define adcReady (!(ADCSRA & (1 << ADSC)))
-#define adcBusy (ADCSRA & (1 << ADSC))
+#if defined (__AVR_ATmega328P__)
+    #define BUTTON_CHANNEL 7 //pin A7 (ADC7)
+#endif //defined (__Atmega328p__)
+#if defined (__AVR_ATmega32U4__)
+    #define BUTTON_CHANNEL 5 //pin A2 (PF5-ADC5) Set as input in ADCButton::init()
+#endif //defined (__Atmega32U4__)
 
-#if defined(__AVR_ATmega328P__)
-#define BUTTON_CHANNEL 7 // pin A7 (ADC7)
-#endif                   // defined (__Atmega328p__)
-#if defined(__AVR_ATmega32U4__)
-#define BUTTON_CHANNEL 5 // pin A2 (PF5-ADC5) Set as input in ADCButton::init()
-#endif                   // defined (__Atmega32U4__)
+#define BTN_CANCEL  1
+#define BTN_OK      2
+#define BTN_UP      3
+#define BTN_DOWN    4
+#define BTN_EXTRA   5     
 
-#define BTN_CANCEL 1
-#define BTN_OK 2
-#define BTN_UP 3
-#define BTN_DOWN 4
-#define BTN_EXTRA 5
-
-class ADCButton
-{
-  private:
+class ADCButton{
+    private:
+    uint8_t initialized;
     void init();
     void requestADC(uint8_t channel);
     int16_t readADC();
-
-  public:
-    ADCButton();
+    
+    public:
+    ADCButton();        
     int8_t read();
 };
 
 extern class ADCButton abtn;
 
-#endif // ADCBUTTON_H
+#endif //ADCBUTTON_H

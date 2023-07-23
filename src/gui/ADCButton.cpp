@@ -17,9 +17,12 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 // -----------------------------------------------------------------------------
 
-#include "ADCButton.h"
+#include "fddEMU.h"
 #include <avr/io.h>
 #include <util/delay.h>
+#include "ADCButton.h"
+#include "ezAnalogKeypad.h"
+
 #if ENABLE_SERIAL
 #include "../serial/simpleUART.h" //debug
 #endif                            // ENABLE_SERIAL
@@ -27,88 +30,37 @@
 class ADCButton abtn;
 #endif // ENABLE_GUI
 
+ezAnalogKeypad buttonArray(BUTTON_CHANNEL);
+
 ADCButton::ADCButton()
 {
-    init();
-    requestADC(BUTTON_CHANNEL);
+  init();
 }
 
 void ADCButton::init()
 {
-#if defined(__AVR_ATmega328P__)
-    PRR &= ~(1 << PRADC); // clear PRADC bit in Power Reduction Register
-#elif defined(__AVR_ATmega32U4__)
-    PRR0 &= ~(1 << PRADC); // clear PRADC bit in Power Reduction Register
-    DDRF &= ~(1 << 5);     // set pin A2 (PF5-ADC5) as INPUT for ADC_BUTTON
-#endif
-    ADMUX = (1 << REFS0);                                              // select AVCC as reference
-    ADCSRA = (1 << ADEN) | (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0); // enable and prescale = 128 (16MHz/128 = 125kHz)
-}
-
-void ADCButton::requestADC(uint8_t channel) // request Analog to Digital Conversion on Channel
-{
-    ADMUX = ((channel & 0x0f) | (1 << REFS0)); // Select channel and voltage reference, if ADLAR is set result is left
-                                               // justified ADCH register is sufficient
-    ADCSRA |= (1 << ADSC);                     // Start the AD conversion
-    // sample-and-hold takes 13.5 ADC clock cycles on first conversion
-    // and 1.5 ADC clock cycles on subsequent converisons
-    // ADC prescaler is set to clock/128, clock=16mhz so "1.5ADC cycle" = "192 cpu cycle" = 12uS
-    // First conversion "13.5 ADC clock cycle" = 108us
-    //_delay_us(12);
-    // First conversion takes 25 ADC cycles and subsequent conversions takes 13 ADC clock cycles
-}
-
-int16_t ADCButton::readADC() // read ADC result
-{
-    int result = 0;
-    uint8_t low, high;
-    low = ADCL;
-    high = ADCH;
-    result = (high << 8) | low;
-    // return ADCW;
-    return result;
+  buttonArray.setNoPressValue(1023); // analog value when no button is pressed
+  buttonArray.registerKey(1, 50);    // analog value when the button 1 is pressed
+  buttonArray.registerKey(2, 200);   // analog value when the button 2 is pressed
+  buttonArray.registerKey(3, 400);   // analog value when the button 3 is pressed
+  buttonArray.registerKey(4, 600);   // analog value when the button 4 is pressed
+  buttonArray.registerKey(5, 800);   // analog value when the button 5 is pressed
 }
 
 int8_t ADCButton::read()
 {
-    static uint8_t prevval = 6;
-    static uint8_t lastval = 6;
-    uint8_t newval = 7;
-    uint16_t adcval;
+  if (!initialized)
+  {
+    init();
+    initialized = 1;
+  }
 
-    if (adcBusy)
-        return 0;
-    adcval = readADC();
-    requestADC(BUTTON_CHANNEL);
-    if (adcval > 900)
-        newval = 6;
-    else if ((adcval >= 800) && (adcval < 870))
-        newval = 5;
-    else if ((adcval >= 600) && (adcval < 660))
-        newval = 4;
-    else if ((adcval >= 400) && (adcval < 450))
-        newval = 3;
-    else if ((adcval >= 190) && (adcval < 230))
-        newval = 2;
-    else if (adcval == 0)
-        newval = 1;
+  uint8_t newval = 7;
 
-    if ((prevval == 6) && (lastval == newval)) // if dropped from max && stable value
-    {
-        prevval = lastval;
-        if (newval < 6)
-        {
-#if DEBUG == 1
-            Serial.print(F("Button: "));
-            Serial.printHEX(newval);
-            Serial.print(F(" value: "));
-            Serial.print(adcval);
-            Serial.write('\n');
-#endif // DEBUG
-            return newval;
-        }
-    }
-    prevval = lastval;
-    lastval = newval;
+  if (adcBusy)
     return 0;
+
+  newval = buttonArray.getKey();
+
+  return newval;
 }
