@@ -37,6 +37,7 @@ int main(void)
 {
 #if ENABLE_GUI
     disp.init();
+    disp.selectDrive(DRIVE0);
 #endif // ENABLE_GUI
 
 #if ENABLE_WDT
