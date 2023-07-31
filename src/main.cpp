@@ -23,7 +23,7 @@
 #include "serial/SerialUI.h"
 #include <avr/io.h>
 
-char s_dir[255] = "/\0"; 
+char s_dir[255] = "/\0";
 
 #if ENABLE_GUI
 #if ENABLE_LCD1602
@@ -38,6 +38,8 @@ int main(void)
 #if ENABLE_GUI
     disp.init();
     disp.selectDrive(DRIVE0);
+    disp.directWrite("Initializing...");
+    _delay_ms(500);
 #endif // ENABLE_GUI
 
 #if ENABLE_WDT
@@ -52,7 +54,17 @@ int main(void)
 #if ENABLE_VFFS
     else
         drive[0].loadVirtualDisk();
+#else
+    else
+    {
+#if ENABLE_GUI
+        disp.directWrite("no sd card");
+#endif // ENABLE_GUI
+        _delay_ms(1500);
+        asm volatile("jmp 0");
+    }
 #endif // ENABLE_VFFS
+
     for (;;)
     {
 #if ENABLE_WDT

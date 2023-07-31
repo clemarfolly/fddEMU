@@ -9,6 +9,7 @@ VFFS = 0	#Virtual FLoppy Disabled
 GUI = 1		#Graphical User Interface enabled
 SERIAL = 0	#Serial disabled
 HALFLCD = 0 #Half height (128x32) OLED instead of full height (128x64) OLED
+LCD1602 = 1	#Using LCD hd44780 
 
 #if DEBUG is enabled, enable SERIAL
 ifneq ($(DEBUG),0)
@@ -61,11 +62,11 @@ INCLUDES	= -I ./ -I src  -I /usr/avr/include -I /usr/lib/avr/include
 
 CFLAGS = -Os -mmcu=$(MCU) -DF_CPU=$(OSC) -Wall $(INCLUDES)
 CFLAGS += -ffunction-sections -fdata-sections -Wl,--gc-sections
-CFLAGS += -DENABLE_WDT=$(WDT)
+CFLAGS += -DENABLE_WDT=$(WDT) 
 #CFLAGS += --save-temps #save temporary files (.s,.i,.ii)
 CXXFLAGS = -Os -mmcu=$(MCU) -DF_CPU=$(OSC) -Wall $(INCLUDES)
 CXXFLAGS += -DENABLE_DRIVE_B=$(DUAL) -DDEBUG=$(DEBUG) -DFLIP_SCREEN=$(FLIP) -DENABLE_WDT=$(WDT)
-CXXFLAGS += -DENABLE_VFFS=$(VFFS) -DENABLE_GUI=$(GUI) -DENABLE_SERIAL=$(SERIAL) -DOLED_128X32=$(HALFLCD)
+CXXFLAGS += -DENABLE_VFFS=$(VFFS) -DENABLE_GUI=$(GUI) -DENABLE_SERIAL=$(SERIAL) -DOLED_128X32=$(HALFLCD) -DENABLE_LCD1602=$(LCD1602)
 LDFLAGS = -lm -g
 ASFLAGS = -mmcu=$(MCU) -Os -DF_CPU=$(OSC)
 

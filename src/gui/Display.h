@@ -17,15 +17,15 @@ class Display
     uint8_t notice_timer;
     const char *notice_header;
     const char *notice_message;
-    virtual void sleepOn() {};
-    virtual void sleepOff() {};
-    virtual void drawMenu() {};
+    virtual void sleepOn(){};
+    virtual void sleepOff(){};
+    virtual void drawMenu(){};
     virtual void drawPage();
-    virtual void loadingScreen() {};
-    virtual void busyScreen() { };
-    virtual void noticeScreen() {};
-    virtual void splashScreen() {};
-    virtual void statusScreen() {};
+    virtual void loadingScreen(){};
+    virtual void busyScreen(){};
+    virtual void noticeScreen(){};
+    virtual void splashScreen(){};
+    virtual void statusScreen(){};
 
   private:
   public:
@@ -65,6 +65,7 @@ class Display
     }
     void loadMenuFiles();
     void buttonAction(int8_t button);
+    virtual void directWrite(const char *){};
 };
 
 #endif

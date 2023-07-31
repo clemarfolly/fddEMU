@@ -50,6 +50,10 @@ bool FloppyDisk::load(char *filename, bool showError)
         return false;
     }
 #if DEBUG
+    else
+    {
+        Serial.print(F("sd read okj.\n"));
+    }
     Serial.print(F("FS: "));
     for (int i = 0; i < 5; i++)
         Serial.write(wbuf[i]);

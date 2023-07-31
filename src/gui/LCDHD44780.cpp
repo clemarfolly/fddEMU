@@ -32,6 +32,13 @@ void LCDHD44780::sleepOff()
 {
 }
 
+void LCDHD44780::directWrite(const char *text)
+{
+    LCD_clear_home();
+    LCD_goto(1, 1);
+    LCD_putstr(text);
+}
+
 void LCDHD44780::drawMenu(void)
 {
     if ((lastScreen != LCD_DRAWMENU_SCREEN) || (menuScreenCount == 0))
@@ -39,15 +46,15 @@ void LCDHD44780::drawMenu(void)
         lastScreen = LCD_DRAWMENU_SCREEN;
         menuScreenCount = MENU_SCREEN_COUNT;
 
-    Serial.print(F("LCDHD44780::drawMenu\n"));
-    LCD_clear_home();
+        //  Serial.print(F("LCDHD44780::drawMenu\n"));
+        LCD_clear_home();
 
-    for (uint8_t i = 0; i < menu_max; i++)
-    {
-        LCD_goto(i + 1, 1);
-        LCD_putchar((i == menu_sel) ? '>' : ' ');
-        LCD_putstr(menuFileNames[i]);
-    }
+        for (uint8_t i = 0; i < menu_max; i++)
+        {
+            LCD_goto(i + 1, 1);
+            LCD_putchar((i == menu_sel) ? '>' : ' ');
+            LCD_putstr(menuFileNames[i]);
+        }
     }
     else
     {
@@ -62,7 +69,9 @@ void LCDHD44780::statusScreen()
         lastScreen = LCD_STATUS_SCREEN;
         statusScreenCount = STATUS_SCREEN_COUNT;
 
+#if DEBUG
         Serial.print(F("LCDHD44780::statusScreen()\n"));
+#endif
 
         LCD_clear_home();
 
@@ -96,30 +105,52 @@ void LCDHD44780::statusScreen()
 
 void LCDHD44780::loadingScreen()
 {
-    LCD_clear_home();
-    Serial.print(F("LCDHD44780::loadingScreen()\n"));
-    LCD_goto(1, 1);
-    LCD_putstr(&menuFileNames[menu_sel][0]);
-    LCD_goto(2, 1);
-    LCD_putstr_P(str_loading);
+    if (lastScreen != LCD_LOADING_SCREEN)
+    {
+        lastScreen = LCD_LOADING_SCREEN;
+
+#if DEBUG
+        Serial.print(F("LCDHD44780::loadingScreen()\n"));
+#endif
+
+        LCD_clear_home();
+        LCD_goto(1, 1);
+        LCD_putstr(&menuFileNames[menu_sel][0]);
+        LCD_goto(2, 1);
+        LCD_putstr_P(str_loading);
+    }
 }
 
 void LCDHD44780::busyScreen()
 {
-    Serial.print(F("LCDHD44780::busyScreen()\n"));
-    LCD_goto(1, 1);
-    LCD_putstr(&drive[getSelectedDrive() - 1].fName[0]);
-    LCD_goto(2, 1);
-    LCD_putstr_P(str_busy);
+    if (lastScreen != LCD_BUSY_SCREEN)
+    {
+        lastScreen = LCD_BUSY_SCREEN;
+#if DEBUG
+        Serial.print(F("LCDHD44780::busyScreen()\n"));
+#endif
+        LCD_clear_home();
+        LCD_goto(1, 1);
+        LCD_putstr(&drive[getSelectedDrive() - 1].fName[0]);
+        LCD_goto(2, 1);
+        LCD_putstr_P(str_busy);
+    }
 }
 
 void LCDHD44780::noticeScreen()
 {
-    Serial.print(F("LCDHD44780::noticeScreen()\n"));
-    LCD_goto(1, 1);
-    LCD_putstr_P(notice_header);
-    LCD_goto(2, 1);
-    LCD_putstr(notice_message);
+    if (lastScreen != LCD_NOTICE_SCREEN)
+    {
+        lastScreen = LCD_NOTICE_SCREEN;
+#if DEBUG
+        Serial.print(F("LCDHD44780::noticeScreen()\n"));
+#endif
+        LCD_clear_home();
+        LCD_goto(1, 1);
+        LCD_putstr_P(notice_header);
+        LCD_goto(2, 1);
+        LCD_putstr(notice_message);
+    }
 }
 
 void LCDHD44780::splashScreen()
@@ -127,8 +158,9 @@ void LCDHD44780::splashScreen()
     if (lastScreen != LCD_SPLASH_SCREEN)
     {
         lastScreen = LCD_SPLASH_SCREEN;
-
+#if DEBUG
         Serial.print(F("LCDHD44780::splashScreen()\n"));
+#endif
         LCD_goto(1, 1);
         LCD_putstr_P(str_fddEMU);
         LCD_putstr(" ");
@@ -137,6 +169,13 @@ void LCDHD44780::splashScreen()
         LCD_putstr_P(str_acemi);
         LCD_putstr(" ");
         LCD_putstr_P(str_elektron);
+        _delay_ms(500);
+        LCD_clear_home();
+        LCD_goto(1, 1);
+        LCD_putstr("   Modded by   ");
+        LCD_goto(2, 1);
+        LCD_putstr("  Clemar Folly  ");
+        _delay_ms(500);
     }
 }
 

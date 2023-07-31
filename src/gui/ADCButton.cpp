@@ -17,11 +17,11 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 // -----------------------------------------------------------------------------
 
+#include "ADCButton.h"
+#include "ezAnalogKeypad.h"
 #include "fddEMU.h"
 #include <avr/io.h>
 #include <util/delay.h>
-#include "ADCButton.h"
-#include "ezAnalogKeypad.h"
 
 #if ENABLE_SERIAL
 #include "../serial/simpleUART.h" //debug
@@ -34,33 +34,35 @@ ezAnalogKeypad buttonArray(BUTTON_CHANNEL);
 
 ADCButton::ADCButton()
 {
-  init();
+    init();
 }
 
 void ADCButton::init()
 {
-  buttonArray.setNoPressValue(1023); // analog value when no button is pressed
-  buttonArray.registerKey(1, 50);    // analog value when the button 1 is pressed
-  buttonArray.registerKey(2, 200);   // analog value when the button 2 is pressed
-  buttonArray.registerKey(3, 400);   // analog value when the button 3 is pressed
-  buttonArray.registerKey(4, 600);   // analog value when the button 4 is pressed
-  buttonArray.registerKey(5, 800);   // analog value when the button 5 is pressed
+    buttonArray.setNoPressValue(1023); // analog value when no button is pressed
+    buttonArray.registerKey(1, 50);    // analog value when the button 1 is pressed
+    buttonArray.registerKey(2, 200);   // analog value when the button 2 is pressed
+    buttonArray.registerKey(3, 400);   // analog value when the button 3 is pressed
+    buttonArray.registerKey(4, 600);   // analog value when the button 4 is pressed
+    buttonArray.registerKey(5, 800);   // analog value when the button 5 is pressed
 }
 
 int8_t ADCButton::read()
 {
-  if (!initialized)
-  {
-    init();
-    initialized = 1;
-  }
+    if (!initialized)
+    {
+        init();
+        initialized = 1;
+    }
 
-  uint8_t newval = 7;
+    uint8_t newval = 7;
 
-  if (adcBusy)
-    return 0;
+    if (adcBusy)
+    {
+        return 0;
+    }
 
-  newval = buttonArray.getKey();
+    newval = buttonArray.getKey();
 
-  return newval;
+    return newval;
 }

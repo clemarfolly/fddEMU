@@ -60,7 +60,7 @@ extern GraphicUI disp;
 #endif
 #endif
 
-extern char s_dir[255];      // Don't make PROGMEM
+extern char s_dir[255];               // Don't make PROGMEM
 const char s_bootfile[] = "BOOT.IMG"; // Don't make PROGMEM
 
 const char str_fddEMU[] PROGMEM = "fddEMU";
@@ -74,7 +74,7 @@ const char str_elektron[] PROGMEM = "Elektronikci";
 const char str_usage[] PROGMEM = "S: Select drive\nP: Previous\nN: Next\nL: Load\nE: Eject";
 const char str_colon[] PROGMEM = ": ";
 const char str_drive[] PROGMEM = "Drive ";
-const char str_busy[] PROGMEM = "BUSY\n";
+const char str_busy[] PROGMEM = "BUSY";
 const char str_idle[] PROGMEM = " idle";
 const char str_selected[] PROGMEM = "Selected ";
 const char str_nodisk[] PROGMEM = "No disk";

@@ -24,16 +24,16 @@
 #include "DisplayConf.h"
 #include "FloppyDrive.h" //BIT_DRIVE0 & BIT_DRIVE1
 
-#define LCD_NONE_SCREEN     0
-#define LCD_STATUS_SCREEN   1
-#define LCD_LOADING_SCREEN  2
-#define LCD_BUSY_SCREEN     3
-#define LCD_NOTICE_SCREEN   4
-#define LCD_SPLASH_SCREEN   5
+#define LCD_NONE_SCREEN 0
+#define LCD_STATUS_SCREEN 1
+#define LCD_LOADING_SCREEN 2
+#define LCD_BUSY_SCREEN 3
+#define LCD_NOTICE_SCREEN 4
+#define LCD_SPLASH_SCREEN 5
 #define LCD_DRAWMENU_SCREEN 6
 
-#define STATUS_SCREEN_COUNT 60
-#define MENU_SCREEN_COUNT 50
+#define STATUS_SCREEN_COUNT 150
+#define MENU_SCREEN_COUNT 150
 
 class LCDHD44780 : public Display
 {
@@ -46,14 +46,17 @@ class LCDHD44780 : public Display
     void noticeScreen() override;
     void statusScreen() override;
     void drawMenu(void) override;
+
   private:
     uint8_t lastScreen;
     uint8_t statusScreenCount;
     uint8_t menuScreenCount;
+
   public:
     LCDHD44780();
     ~LCDHD44780();
     void init() override;
+    void directWrite(const char *) override;
 };
 
 // #if ENABLE_GUI && ENABLE_LCD1602

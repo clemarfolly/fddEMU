@@ -100,11 +100,11 @@ uint8_t DiskFile::getNextFile()
 {
     if (!getNextEntry())
         return 0;
-    
-   if (fno.fattrib & (AM_DIR))
-    return FTYPE_DIR;
 
-  return FTYPE_FILE;
+    if (fno.fattrib & (AM_DIR))
+        return FTYPE_DIR;
+
+    return FTYPE_FILE;
 }
 
 bool DiskFile::getFileInfo(char *path, char *filename)
@@ -124,49 +124,60 @@ bool DiskFile::getFileInfo(char *path, char *filename)
 
 uint32_t DiskFile::getStartSector()
 {
-  if (IsRootDir()) // root directory
-  {
-    res = pf_open(fno.fname);
-  }
-  else
-  {
-    char fullpath[255];
-    uint8_t i = 0;
-    uint8_t j = 0;
-
-    while (s_dir[j] != '\0')
+    if (IsRootDir()) // root directory
     {
-      fullpath[i] = s_dir[j];
-      i++;
-      j++;
+        res = pf_open(fno.fname);
+    }
+    else
+    {
+        char fullpath[255];
+        uint8_t i = 0;
+        uint8_t j = 0;
+
+        while (s_dir[j] != '\0')
+        {
+            fullpath[i] = s_dir[j];
+            i++;
+            j++;
+        }
+
+        if (fullpath[i - 1] != '/')
+        {
+            fullpath[i] = '/';
+            i++;
+        }
+
+        j = 0;
+        while (fno.fname[j] != '\0')
+        {
+            fullpath[i] = fno.fname[j];
+            i++;
+            j++;
+        }
+
+        if (i < 245)
+            fullpath[i] = '\0';
+        else
+            fullpath[254] = '\0';
+
+        res = pf_open(fullpath);
+
+#if DEBUG
+        Serial.print_P("Path: ");
+        Serial.print(fullpath);
+        Serial.write('\n');
+#endif // DEBUG
     }
 
-    if (fullpath[i - 1] != '/')
+    if (res != FR_OK)
     {
-      fullpath[i] = '/';
-      i++;
+        msg.error(err_fopen);
+        return 0;
     }
-
-    j = 0;
-    while (fno.fname[j] != '\0')
+    if (!isContiguousFile()) // we will use direct sector access so we need a contiguous file
     {
-      fullpath[i] = fno.fname[j];
-      i++;
-      j++;
+        msg.error(err_noncontig);
+        return 0;
     }
-
-    res = pf_open(fullpath);
-  }
-
-  if (res != FR_OK)
-  {
-    msg.error(err_fopen);
-    return 0;
-  }
-  if (!isContiguousFile()) // we will use direct sector access so we need a contiguous file
-  {
-    msg.error(err_noncontig);
-    return 0;
-  }
-  return get_start_sector();
+    return get_start_sector();
 }

@@ -40,25 +40,25 @@
 
 class ezAnalogKeypad
 {
-private:
-	int keypadPin;
-	uint16_t debounceTime;
-	uint16_t debounceCount;
-	int keyNum;
-	int lastKeyId;
-	unsigned char keys[ezAnalogKeypad_MAX_KEY + 1]; // one for non-press state
-	int values[ezAnalogKeypad_MAX_KEY + 1];
-	bool debounce();
-	uint16_t analogRead(int pin);
-	void initAdc();
-	void requestADC(uint8_t channel);
+  private:
+    int keypadPin;
+    uint16_t debounceTime;
+    uint16_t debounceCount;
+    int keyNum;
+    int lastKeyId;
+    unsigned char keys[ezAnalogKeypad_MAX_KEY + 1]; // one for non-press state
+    int values[ezAnalogKeypad_MAX_KEY + 1];
+    bool debounce();
+    uint16_t analogRead(int pin);
+    void initAdc();
+    void requestADC(uint8_t channel);
 
-public:
-	ezAnalogKeypad(int pin);
-	void setDebounceTime(uint16_t time);
-	void setNoPressValue(int analogValue);
-	void registerKey(unsigned char key, int analogValue);
-	unsigned char getKey();
+  public:
+    ezAnalogKeypad(int pin);
+    void setDebounceTime(uint16_t time);
+    void setNoPressValue(int analogValue);
+    void registerKey(unsigned char key, int analogValue);
+    unsigned char getKey();
 };
 
 #endif
