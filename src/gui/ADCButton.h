@@ -20,6 +20,8 @@
 #ifndef ADCBUTTON_H
 #define ADCBUTTON_H
 
+#include <stdint.h>
+
 #define adcReady (!(ADCSRA & (1 << ADSC)))
 #define adcBusy (ADCSRA & (1 << ADSC))
 

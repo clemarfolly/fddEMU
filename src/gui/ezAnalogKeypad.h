@@ -33,6 +33,7 @@
 #define ezAnalogKeypad_h
 
 // #include <Arduino.h>
+#include <stdint.h>
 
 #ifndef ezAnalogKeypad_MAX_KEY
 #define ezAnalogKeypad_MAX_KEY 20

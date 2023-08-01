@@ -91,6 +91,7 @@ ezAnalogKeypad::ezAnalogKeypad(int pin)
 {
     keypadPin = pin;
     debounceTime = 500; // default is 500 passes
+	debounceCount = debounceTime;
 
     keyNum = 0;
     lastKeyId = -1;
@@ -108,6 +109,7 @@ ezAnalogKeypad::ezAnalogKeypad(int pin)
 void ezAnalogKeypad::setDebounceTime(uint16_t time)
 {
     debounceTime = time;
+	debounceCount = debounceTime;
 }
 
 void ezAnalogKeypad::setNoPressValue(int analogValue)
