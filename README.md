@@ -138,7 +138,8 @@ run `make` to build fddEMU.hex with default options.
 * *VFFS:* enables virtual disk.
 * *DEBUG:* enables debug output on serial.
 * *FLIP:* flips the image on OLED screen 180 degrees (enabled default by Makefile).
-* *WDT:* enables watchdog timer (enabled default by Makefile).<br><br>
+* *WDT:* enables watchdog timer (enabled default by Makefile).
+* *LCD1602:* enables LCD hd44780.<br><br>
 These build options could either be switched on and off from Makefile or commandline 
 (eg.: `make DUAL=1 GUI=1 VFFS=1 SERIAL=0 DEBUG=0`).<br>
 Flashing the mcu could also be done by Makefile. `make flash` programs "fddEMU.hex" to 
@@ -214,7 +215,7 @@ After a drive is selected:<br>
 * [u8glib](https://github.com/olikraus/u8glib) Very useful for incorporating SSD1306 and can easily be used with various displays.
 * [lufa](https://github.com/abcminiuser/lufa) Lightweight USB Framework for AVRs
 * [Lab Projects BD](https://labprojectsbd.com/2020/05/14/how-to-interface-16x2-lcd-with-pic12f675-its-easy/) Interfacing 16×2 LCD with 74HC595
-* [ArduinoGetStarted.com] (https://arduinogetstarted.com/tutorials/arduino-analog-keypad-library) Arduino - Analog Keypad Library
+* [ArduinoGetStarted.com](https://arduinogetstarted.com/tutorials/arduino-analog-keypad-library) Arduino - Analog Keypad Library
 <br><br>
 
 **Releases**
