@@ -1,7 +1,9 @@
 # fddEMU
 An AVR (atmega328p) based floppy drive emulator for PC
 <br>
-[![build for atmega328p & atmega32u4](https://github.com/acemielektron/fddEMU/actions/workflows/build-firmware.yml/badge.svg)](https://github.com/acemielektron/fddEMU/actions/workflows/build-firmware.yml)
+forked from [acemielektron/fddEMU](https://github.com/acemielektron/fddEMU)
+<br>
+[![build for atmega328p & atmega32u4](https://github.com/clemarfolly/fddEMU/actions/workflows/build-firmware.yml/badge.svg)](https://github.com/clemarfolly/fddEMU/actions/workflows/build-firmware.yml)
 <br>
 ![fddEMU on perfboard](/images/perfboard-2.png)
 <br>
@@ -104,7 +106,12 @@ VCC                 |5V             |VCC
 2  (PD1)			|A4			    |SDA
 3  (PD0)			|A5			    |SCL
 
-<br><br>
+<br>
+**LCD HD44780 16x02 with 74LS595 connections**
+
+![LCD HD44780 16x02](/images/lcd1602_74ls595.png | width=350)
+
+<br>
 
 **Resistor ladder for ADC buttons**
 <br>
@@ -115,7 +122,7 @@ Connected to pin A7 (ADC7) on Arduino Nano or pin A2 (PF5) on Arduino Pro Micro
 
 **Firmware**
 <br>
-Download with submodules(u8glib & lufa): `git clone https://github.com/acemielektron/fddEMU --recursive`<br>
+Download with submodules(u8glib & lufa): `git clone https://github.com/clemarfolly/fddEMU --recursive`<br>
 If not downloaded with recursive option run (in fddEMU folder): `git submodule update --init --recursive`<br>
 Current Makefile assumes avr-gcc and avr-binutils are installed and are in the path, 
 avr specific includes are in "/usr/avr/include" (arch) or "/usr/lib/avr/include" (ubuntu) <br>
@@ -150,10 +157,10 @@ PORT variable (eg.: `make flash PORT=/dev/ttyUSB2`).
 <br><br>
 
 **How to use (GUI button interface)**
-* S1: Load Virtual Disk
+* S1: Load Virtual Disk / Change to the parent directory
 * S2: Next
 * S3: Previous
-* S4: Open file selection Menu / Load selected file
+* S4: Open file selection Menu / Load selected file / Enter selected directory
 * S5: Eject selected disk / Cancel loading file
 <br>
 On the main screen, drive 0 "A" and -if enabled- drive 1 "B" are displayed. To use any of the functions a drive must first be selected through "S2" or "S3" buttons.<br>
@@ -202,12 +209,14 @@ After a drive is selected:<br>
 * [rjhcoding.com/avrc-sd-interface](http://rjhcoding.com/avrc-sd-interface-1.php) Great tutorial for using SD card with AVR.
 * [u8glib](https://github.com/olikraus/u8glib) Very useful for incorporating SSD1306 and can easily be used with various displays.
 * [lufa](https://github.com/abcminiuser/lufa) Lightweight USB Framework for AVRs
+* [Lab Projects BD](https://labprojectsbd.com/2020/05/14/how-to-interface-16x2-lcd-with-pic12f675-its-easy/) Interfacing 16×2 LCD with 74HC595
+* [ArduinoGetStarted.com] (https://arduinogetstarted.com/tutorials/arduino-analog-keypad-library) Arduino - Analog Keypad Library
 <br><br>
 
 **Releases**
 <br>
-* [fddEMU releases](https://github.com/acemielektron/fddEMU/releases)
+* [fddEMU releases](https://github.com/clemarfolly/fddEMU/releases)
 <br><br>
 
-**Note:**  Please report any errors on [github issues for fddEMU](https://github.com/acemielektron/fddEMU/issues). Suggestions for improvements and feedback could be posted on [discussions](https://github.com/acemielektron/fddEMU/discussions) or [fddEMU blog page](http://acemielektronikci.blogspot.com/2021/10/fddemu-disket-surucu-emulatoru.html) Although the blog page is in turkish, feel free to write comments either in turkish or english.
+**Note:**  Please report any errors on [github issues for fddEMU](https://github.com/clemarfolly/fddEMU/issues). Suggestions for improvements and feedback could be posted on [discussions](https://github.com/clemarfolly/fddEMU/discussions)
 <br><br>
