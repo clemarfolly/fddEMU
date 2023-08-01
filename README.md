@@ -1,8 +1,8 @@
 # fddEMU
 An AVR (atmega328p) based floppy drive emulator for PC
-<br>
+<br><br>
 forked from [acemielektron/fddEMU](https://github.com/acemielektron/fddEMU)
-<br>
+<br><br>
 [![build for atmega328p & atmega32u4](https://github.com/clemarfolly/fddEMU/actions/workflows/build-firmware.yml/badge.svg)](https://github.com/clemarfolly/fddEMU/actions/workflows/build-firmware.yml)
 <br>
 ![fddEMU on perfboard](/images/perfboard-2.png)
@@ -107,9 +107,13 @@ VCC                 |5V             |VCC
 3  (PD0)			|A5			    |SCL
 
 <br>
-**LCD HD44780 16x02 with 74LS595 connections**
 
-<img src="/images/lcd1602_74ls595.png" alt="LCD HD44780 16x02" width="100px" />
+
+**LCD HD44780 16x02 with 74LS595 connections**
+<br>
+Connected to pins A4, 11 and 13. Sharing SPI with SD Card
+<br>
+<img src="/images/lcd1602_74ls595.png" alt="LCD HD44780 16x02" width="700px" />
 
 <br>
 
