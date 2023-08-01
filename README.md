@@ -109,7 +109,7 @@ VCC                 |5V             |VCC
 <br>
 **LCD HD44780 16x02 with 74LS595 connections**
 
-![LCD HD44780 16x02](/images/lcd1602_74ls595.png | width=350)
+<img src="/images/lcd1602_74ls595.png" alt="LCD HD44780 16x02" width="100px" />
 
 <br>
 
